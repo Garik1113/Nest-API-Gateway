@@ -47,7 +47,7 @@ export class UsersController {
       }),
     );
     return {
-      access_token: result.access_token,
+      message: 'UPDATED',
     };
   }
 }
