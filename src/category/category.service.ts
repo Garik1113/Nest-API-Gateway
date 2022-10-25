@@ -13,7 +13,9 @@ export class CategoryService {
   async create(createCategoryDto: any) {
     const category = new Category();
     category.name = createCategoryDto.name;
-    category.parent_id = createCategoryDto.parent_id;
+    if (createCategoryDto.parent_id) {
+      category.parent_id = createCategoryDto.parent_id;
+    }
     await this.repository.save(category);
   }
 
@@ -34,7 +36,6 @@ export class CategoryService {
                     SELECT tn.id, tn.name, tn.parent_id, 1::INT AS depth, tn.name::TEXT AS path FROM category AS tn WHERE tn.parent_id = $1
                     UNION ALL
                     SELECT c.id, c.name, c.parent_id, p.depth + 1 AS depth, (p.path || '->' || c.name::TEXT) FROM nodes_cte AS p, category AS c WHERE c.parent_id = p.id
-                    
                     )
                     SELECT * FROM nodes_cte AS n;
                 `;
